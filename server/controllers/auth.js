@@ -1,10 +1,50 @@
+import User from "../models/User.js";
 
 export const register = async (req, res, next) => {
-    res.send("Register Route");
+    const { username, email, password } = req.body;
+    try {
+        const user = await User.create({
+            username, email, password
+        });
+
+        res.status(201).json({
+            success: true,
+            user
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        });
+    }
 }
 
 export const login = async (req, res, next) => {
-    res.send("Login Route");
+    const { email, password } = req.body;
+    if (!email || !password) {
+        res.status(400).json({ success: false, error: "Please provide email and password" });
+    }
+
+    try {
+        const user = await User.findOne({ email }).select("+password");
+
+        if (!user) {
+            res.status(404).json({ success: false, error: "Invalid credentails" });
+        }
+
+        const isMatch = await user.matchPasswords(password);
+
+        if (!isMatch) {
+            res.status(404).json({ success: false, error: "Invalid credentails" });
+        }
+
+        res.status(200).json({
+            success: true,
+            token: "sdkfljksd",
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
 }
 
 export const forgotpassword = async (req, res, next) => {
