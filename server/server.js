@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv"
 import AuthRoutes from "./routes/auth.js";
+import PrivateRoutes from "./routes/private.js";
 import connectDB from "./config/db.js";
 import errorHandler from "./middleware/error.js";
 
@@ -14,6 +15,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/auth", AuthRoutes);
+app.use("/api/private", PrivateRoutes);
 
 // Error Handler (should be last piece of middleware)
 app.use(errorHandler);

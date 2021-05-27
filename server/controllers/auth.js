@@ -8,10 +8,7 @@ export const register = async (req, res, next) => {
             username, email, password
         });
 
-        res.status(201).json({
-            success: true,
-            user
-        })
+        sendToken(user, 201, res);
     } catch (error) {
         next(error);
     }
@@ -36,10 +33,7 @@ export const login = async (req, res, next) => {
             return next(new errorResponse("Invalid credentails", 401));
         }
 
-        res.status(200).json({
-            success: true,
-            token: "sdkfljksd",
-        });
+        sendToken(user, 200, res);
     } catch (error) {
         next(error);
     }
@@ -51,4 +45,9 @@ export const forgotpassword = async (req, res, next) => {
 
 export const resetpassword = async (req, res, next) => {
     res.send("Reset Password Route");
+}
+
+const sendToken = (user, statusCode, res) => {
+    const token = user.getSignedToken();
+    res.status(statusCode).json({ success: true, token });
 }
