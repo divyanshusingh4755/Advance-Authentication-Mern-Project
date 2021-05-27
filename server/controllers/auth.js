@@ -40,7 +40,34 @@ export const login = async (req, res, next) => {
 }
 
 export const forgotpassword = async (req, res, next) => {
-    res.send("Forgot Password Route");
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return next(new errorResponse("Email could be sent", 404));
+        }
+        const resetToken = user.getResetPasswordToken();
+        await user.save();
+
+        const resetUrl = `http://localhost:3000/passwordreset/${resetToken}`;
+
+        const message = `
+        <h1>You have requested a password reset</h1>
+        <p>Please go to this link to reset your password</p>
+        <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+        `
+
+        try {
+
+        } catch (error) {
+
+        }
+
+    } catch (error) {
+
+    }
 }
 
 export const resetpassword = async (req, res, next) => {
